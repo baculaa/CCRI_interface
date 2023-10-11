@@ -129,6 +129,7 @@ function addFixedLineToArray(x,starty,endy){
 
 var columnCount = 1;
 var hLinePlace = 30;
+var lmaSelectedCols = [];
 function addLMAColumn(){
 	ctx.setLineDash([0, 0])
 	ctx.beginPath();
@@ -145,6 +146,7 @@ function addLMAColumn(){
 	ctx.stroke();
 	addFixedLineToArray(hLinePlace,0,height);
 	line_points[0][hLinePlace] = lmaSel;
+	lmaSelectedCols.push(lmaSel);
 	// columnCount+=1;
 }
 
@@ -169,12 +171,8 @@ function makeTimeColumn(){
 	ctx.lineWidth = 2; //Change Line Width/Thickness
 	ctx.moveTo(30,0);
 	ctx.lineTo(30,height);
-	// for(let i=0; i < canvas.height+1; i++){
-  // line_points[i][30] = 2;}
-  //   }
-	addFixedLineToArray(30,0,height);
-	// ctx.endPath();
 	ctx.stroke();
+	addFixedLineToArray(30,0,height);
 	var j =0;
 	while(j< increment*num_rows+1){
 		// window.alert(j);
@@ -187,6 +185,37 @@ function makeTimeColumn(){
 	}
 
 }
+
+
+var numFilledCols = 0;
+var colsToSave = [];
+function getRidBlankColumns(array_name){
+	for (var i=0; i<array_name[0].length; i++){
+		columnCheck=0;
+		for (var j=0; j<array_name.length; j++){
+			columnCheck += array_name[j][i];
+		}
+		if (columnCheck > 0 && columnCheck < height+2){
+			numFilledCols += 1;
+			colsToSave.push(i)
+      /* window.alert(i) */;
+      window.alert(colsToSave);
+		}
+	}
+	let condensedArray = Array(height+1).fill().map(() => Array(numFilledCols).fill(0));
+  for (var k=0; k<numFilledCols; k++){
+  columnNumber = colsToSave[k];
+  for (var i=0; i<height; i++){
+  condensedArray[i][k] = array_name[i][columnNumber];
+	condensedArray[0][k] = lmaSelectedCols[k];
+  }
+  }
+  return condensedArray;
+}
+
+
+
+
 // To CSV
 function exportToCsv(filename, rows) {
         var processRow = function (row) {
@@ -236,4 +265,4 @@ function clearAllButton(){
 
 
 function downloadCSV(){
-exportToCsv('export.csv', line_points)}
+exportToCsv('export.csv', getRidBlankColumns(line_points))}
