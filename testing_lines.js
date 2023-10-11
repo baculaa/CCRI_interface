@@ -1,55 +1,61 @@
+//Canvas
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+//Variables
+var canvasx = $(canvas).offset().left;
+var canvasy = $(canvas).offset().top;
+var width = canvas.width
+var height = canvas.height
+var last_mousex = last_mousey = 0;
+var mousex = mousey = 0;
+var mousedown = false;
+// var background = new Image();
 
-$('#irow').click(function(){
-		num_rows = $('#row').val()
-    if($('#row').val()){
-    for(let i = 0; i < 2*num_rows+1; i++){
-        $('#lmatable tbody').append($("#lmatable tbody tr:last").clone());
-        $('#lmatable tbody tr:last :checkbox').attr('checked',false);
-        $('#lmatable tbody tr:last td:first').html(num_rows - i/2);
-        }
-    }else{alert('Enter Video Length in Seconds');}
-});
+let line_points = Array(height).fill().map(() => Array(width).fill(0));
 
 
- $('#icol').click(function(){
-    if(lmaSel){
-        $('#lmatable tr').append($("<td>"));
-        $('#lmatable thead tr>td:last').html(lmaSel);
-        $('#lmatable tbody tr').each(function(){$(this).children('td:last').append($('<input class="checkbox" type="checkbox"  data-checked="0">'))});
-    }else{alert('Choose LMA Concept');}
-});
-
-   $('.checkbox').click(function() {
-   if ($(this).data("checked") === 0) {
-      $(this).data("checked", "1")
-   } else {
-      $(this).data("checked", "0")
-     }
-  });
-
-// function changeOptions() {
-//     let col = document.getElementById("col").value;
-//     let id = `options-${col}`;
-//     let itemSelection = document.getElementById("itemSelection");
-//     for (let optgroup of itemSelection.children) {
-//         let match = optgroup.id === id;
-//         optgroup[(match ? "remove" : "set") + "Attribute"]("hidden", "hidden");
-//         if (match) {
-//             itemSelection.value = optgroup.children[0].value;
-//         }
+// background.src = "https://i.imgur.com/NHSs8cT.png";
 //
-//     let itemSelection2 = document.getElementById("itemSelection2");
-//     for (let optgroup of itemSelection2.children) {
-//         let match = optgroup.id === id;
-//         optgroup[(match ? "remove" : "set") + "Attribute"]("hidden", "hidden");
-//         if (match) {
-//             itemSelection2.value = optgroup.children[0].value;
-//         }
-//     }
-// }
+// background.onload = function(){
+//     ctx.drawImage(background,0,0,width,height);
 // }
 
-// changeOptions();
+//Mousedown
+$(canvas).on('mousedown', function(e) {
+    last_mousex = parseInt(e.clientX-canvasx);
+	  last_mousey = parseInt(e.clientY-canvasy);
+    mousedown = false;
+});
+
+//Mouseup
+$(canvas).on('mouseup', function(e) {
+  mousex = parseInt(e.clientX-canvasx);
+	mousey = parseInt(e.clientY-canvasy);
+    mousedown = true;
+});
+
+
+
+//Mousemove
+$(canvas).on('mousemove', function(e) {
+    /* mousex = parseInt(e.clientX-canvasx);
+      mousey = parseInt(e.clientY-canvasy); */
+    if(mousedown) {
+        /* ctx.clearRect(0,0,canvas.width,canvas.height) */ //clear canvas
+      ctx.beginPath();
+ 			 ctx.strokeStyle = "#000"; //Change Line Color
+  	ctx.lineWidth = 2; //Change Line Width/Thickness
+  ctx.moveTo(last_mousex,last_mousey);
+  ctx.lineTo(last_mousex,mousey);
+  ctx.stroke();
+  for(let i=mousey; i < last_mousey; i++){
+  line_points[i][last_mousex] = 1;}
+    }
+    //Output
+    /* $('#output').html('current: '+mousex+', '+mousey+'<br/>last: '+last_mousex+', '+last_mousey+'<br/>mousedown: '+mousedown); */
+});
+
+
 
 var lmaObject = {
     "Body": {
@@ -80,31 +86,7 @@ var lmaObject = {
 			  "Phrasing": ["Even","Impulsive","Impactive","Swing","Becoming","Diminishing","Vibratory"]
 		}
 }
-// window.onload = function () {
-//     var lmaSel = document.getElementById("lmaSel"),
-//         lmasubSel = document.getElementById("lmasubSel"),
-//         lmasubsubSel = document.getElementById("lmasubsubSel");
-//     for (var state in lmaObject) {
-//         lmaSel.options[lmaSel.options.length] = new Option(state, state);
-//     }
-//     lmaSel.onchange = function () {
-//         lmasubSel.length = 1; // remove all options bar first
-//         lmasubsubSel.length = 1; // remove all options bar first
-//         if (this.selectedIndex < 1) return; // done
-//         for (var county in lmaObject[this.value]) {
-//             lmasubSel.options[lmasubSel.options.length] = new Option(county, county);
-//         }
-//     }
-//     // lmaSel.onchange(); // reset in case page is reloaded
-//     lmasubSel.onchange = function () {
-//         lmasubsubSel.length = 1; // remove all options bar first
-//         if (this.selectedIndex < 1) return; // done
-//         // var cities = lmaObject[lmasubSel.value][this.value];
-//         for (var city in lmaObject[lumasubSel.value][this.value]) {
-//             lmasubsubSel.options[lmasubsubSel.options.length] = new Option(city, city);
-//         }
-//     }
-// }
+
 var lmaSel;
 window.onload = function () {
     var stateSel = document.getElementById("stateSel"),
@@ -133,53 +115,79 @@ window.onload = function () {
 		stateSel.onchange(); // reset in case page is reloaded
 		citySel.onchange = function () {
 			lmaSel = this.value;
-			window.alert(lmaSel);
+			// window.alert(lmaSel);
 		}
 }
 
-var tableValues = [];
- function tableToArray(){
-window.alert("HERE");
-//gets table
-var oTable = document.getElementById("lmatable");
-window.alert(oTable)
 
-//gets rows of table
-var rowLength = oTable.rows.length;
+function addFixedLineToArray(x,starty,endy){
+	window.alert("Fixed Line to Array");
+	for(let i=starty; i < endy; i++){
+		// window.alert(i);
+  line_points[i][x] = 2;}
+    }
 
-//loops through rows
-for (i = 0; i < rowLength; i++){
-
-  //gets cells of current row
-   var oCells = oTable.rows.item(i).cells;
-
-   //gets amount of cells of current row
-   var cellLength = oCells.length;
-   if (oCells.item(0).innerHTML = "<"){
-
-   // window.alert(oCells);
-
-   } else {
-   //loops through each cell in current row
-   for(var j = 0; j < cellLength; j++){
-      // get your cell info here
-
-      var cellVal = oCells.item(j).innerHTML;
-      console.log(cellVal);
-
-
-  if (cellVal){
-
-      }
-      tableValues.push(cellVal);
-      }
-   }
-}
-window.alert(tableValues);
-
+var columnCount = 1;
+var hLinePlace = 30;
+function addLMAColumn(){
+	ctx.setLineDash([0, 0])
+	ctx.beginPath();
+	ctx.strokeStyle = "#7a7a7a"; //Change Line Color
+	ctx.lineWidth = 2; //Change Line Width/Thickness
+	var columnWidth = 30
+	ctx.textAlign ="middle";
+	ctx.font = "13px serif";
+	ctx.fillStyle = "black";
+	hLinePlace += (lmaSel.toString().length*10);
+	ctx.fillText(lmaSel.toString(), hLinePlace-5, 10,500);
+	ctx.moveTo(hLinePlace,0);
+	ctx.lineTo(hLinePlace,height);
+	ctx.stroke();
+	addFixedLineToArray(hLinePlace,0,height);
+	line_points[0][hLinePlace] = lmaSel;
+	// columnCount+=1;
 }
 
- // To CSV
+function makeTimeColumn(){
+	var num_rows=3;
+	var increment = 5;
+	var spacing = canvas.height/(increment*num_rows);
+	ctx.setLineDash([5, 10]);
+	for(let i = 0; i < increment*num_rows+1; i++){
+
+		ctx.beginPath();
+		ctx.strokeStyle = "#7a7a7a"; //Change Line Color
+		ctx.lineWidth = 2; //Change Line Width/Thickness
+		ctx.moveTo(0,i*spacing);
+		ctx.lineTo(width,i*spacing);
+		// ctx.endPath();
+		ctx.stroke();
+	}
+	ctx.setLineDash([0, 0])
+	ctx.beginPath();
+	ctx.strokeStyle = "#7a7a7a"; //Change Line Color
+	ctx.lineWidth = 2; //Change Line Width/Thickness
+	ctx.moveTo(30,0);
+	ctx.lineTo(30,height);
+	// for(let i=0; i < canvas.height+1; i++){
+  // line_points[i][30] = 2;}
+  //   }
+	addFixedLineToArray(30,0,height);
+	// ctx.endPath();
+	ctx.stroke();
+	var j =0;
+	while(j< increment*num_rows+1){
+		// window.alert(j);
+		ctx.textAlign ="right";
+		ctx.font = "13px serif";
+		ctx.fillStyle = "black";
+		ctx.fillText((num_rows-(j/increment)).toFixed(1), 25, (j*spacing)+15,500);
+		j+=1;
+		// window.alert(j);
+	}
+
+}
+// To CSV
 function exportToCsv(filename, rows) {
         var processRow = function (row) {
             var finalVal = '';
@@ -187,7 +195,7 @@ function exportToCsv(filename, rows) {
                 var innerValue = row[j] === null ? '' : row[j].toString();
                 if (row[j] instanceof Date) {
                     innerValue = row[j].toLocaleString();
-                }
+                };
                 var result = innerValue.replace(/"/g, '""');
                 if (result.search(/("|,|\n)/g) >= 0)
                     result = '"' + result + '"';
@@ -221,39 +229,11 @@ function exportToCsv(filename, rows) {
         }
     }
 
-		// $('#downloadCSV').click(function () {
-		// // Initialize an array to store the checkbox values
-		// var data = [];
-		//
-		// // Iterate through each checkbox and add its state (checked or not) to the array
-		// $('.checkbox').each(function () {
-		// 		data.push($(this).prop('checked') ? '1' : '0');
-		// });
-		//
-		// // Convert the data array to a CSV string
-		// var csvContent = 'Name,Selected\n';
-		// for (var i = 0; i < data.length; i++) {
-		// 		csvContent += 'Item ' + (i + 1) + ',' + data[i] + '\n';
-		// }
-		//
-		// // Create a data URI for the CSV content
-		// var blob = new Blob([csvContent], { type: 'text/csv' });
-		// var url = URL.createObjectURL(blob);
-		//
-		// // Create a download link and trigger the download
-		// var a = document.createElement('a');
-		// a.href = url;
-		// a.download = 'checkbox_data.csv';
-		// a.click();
-		// URL.revokeObjectURL(url);
+function clearAllButton(){
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	makeTimeColumn();
+}
+
 
 function downloadCSV(){
-window.alert("here in downloadCSV")
-tableToArray()
-exportToCsv('export.csv', tableValues)
-}
-/* $("[id$=exportButton]").click(function(e) {
-    window.open('data:application/vnd.ms-excel,' + encodeURIComponent( $('div[id$=divTableDataHolder]').html()));
-    e.preventDefault();
-});
- */
+exportToCsv('export.csv', line_points)}
