@@ -6,7 +6,16 @@
   </head>
   <body>
 
-     <div id="divTableDataHolder">
+    <div class='parent'>
+
+
+    <div class="child">
+    <video height="180" width="300" id="a"  controls>
+        <source src="video.mp4" id="video1"></video>
+    </video>
+  </div>
+
+     <div id="divTableDataHolder" class="child">
   <table border="1" id="lmatable" class="display">
     <thead>
       <tr>
@@ -19,11 +28,29 @@
       </tr>
     </tbody>
   </table>
-  </div> <br /><br />
+<br /><br />
+<input id="row" placeholder="Enter Video Time in Seconds" /><button id="irow">Enter</button><br /><br />
+  <form name="form" id="form">
+      <select name="optone" id="stateSel" size="1">
+          <option value="" selected="selected">Select</option>
+      </select>
+
+      <select name="opttwo" id="countySel" size="1">
+          <option value="" selected="selected">Select</option>
+      </select>
+
+      <select name="optthree" id="citySel" size="1">
+          <option value="" selected="selected">Select</option>
+      </select>
+  </form>
+  <button id="icol">Insert Column</button><br /><br />
+
+  </div>
+
 
 <script src="jquery.js"></script>
 
-<input id="row" placeholder="Enter Video Time in Seconds" /><button id="irow">Enter</button><br /><br />
+
   <!--
   <input type="text" id="col" placeholder="Add LMA Concept" list="lmaMegaConcepts" onChange="changeOptions()" onInput="changeOptions()" autocomplete="off">
   <datalist id="lmaMegaConcepts">
@@ -94,23 +121,12 @@
     </select>
 </form> -->
 
-<form name="form" id="form">
-    <select name="optone" id="stateSel" size="1">
-        <option value="" selected="selected">Select state</option>
-    </select>
 
-    <select name="opttwo" id="countySel" size="1">
-        <option value="" selected="selected">select</option>
-    </select>
-
-    <select name="optthree" id="citySel" size="1">
-        <option value="" selected="selected">select</option>
-    </select>
-</form>
-<button id="icol">Insert Column</button><br /><br />
+</div>
 
 <!-- (B) DOWNLOAD AS CSV -->
 <input type="button" value="Save to Excel" onclick="downloadCSV()">
+
   <!-- <select id="itemSelection2">
     <optgroup id="options-Body-Head">
       <option value="Head">Head</option>
