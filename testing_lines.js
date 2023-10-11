@@ -187,9 +187,10 @@ function makeTimeColumn(){
 }
 
 
-var numFilledCols = 0;
-var colsToSave = [];
+
 function getRidBlankColumns(array_name){
+	var numFilledCols = 0;
+	var colsToSave = [];
 	for (var i=0; i<array_name[0].length; i++){
 		columnCheck=0;
 		for (var j=0; j<array_name.length; j++){
