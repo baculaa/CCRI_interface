@@ -121,7 +121,7 @@ window.onload = function () {
 
 
 function addFixedLineToArray(x,starty,endy){
-	window.alert("Fixed Line to Array");
+	// window.alert("Fixed Line to Array");
 	for(let i=starty; i < endy; i++){
 		// window.alert(i);
   line_points[i][x] = 2;}
@@ -267,3 +267,41 @@ function clearAllButton(){
 
 function downloadCSV(){
 exportToCsv('export.csv', getRidBlankColumns(line_points))}
+
+
+// /* VIDEO CONTROLS */
+//
+const video = document.querySelector(".video");
+const toggleButton = document.querySelector(".toggleButton");
+const progress = document.querySelector(".progress");
+const progressBar = document.querySelector(".progress__filled");
+
+function togglePlay() {
+  if (video.paused || video.ended) {
+    video.play();
+  } else {
+    video.pause();
+  }
+}
+
+function updateToggleButton() {
+  toggleButton.innerHTML = video.paused ? "►" : "❚ ❚";
+}
+
+function handleProgress() {
+  const progressPercentage = (video.currentTime / video.duration) * 100;
+  progressBar.style.height = `${progressPercentage}%`;
+}
+
+function scrub(e) {
+  const scrubTime = (e.offsetY / progress.offsetHeight) * video.duration;
+  video.currentTime = scrubTime;
+}
+//
+toggleButton.addEventListener("click", togglePlay);
+video.addEventListener("click", togglePlay);
+video.addEventListener("play", updateToggleButton);
+video.addEventListener("pause", updateToggleButton);
+
+video.addEventListener("timeupdate", handleProgress);
+progress.addEventListener("click", scrub);
