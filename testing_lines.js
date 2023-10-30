@@ -22,7 +22,7 @@ let line_points = Array(height).fill().map(() => Array(width).fill(0));
 
 //Mousedown
 $(canvas).on('mousedown', function(e) {
-    last_mousex = parseInt(e.clientX-canvasx);
+    last_mousex = parseInt(e.clientX-canvasx-100);//offset from 50 in container css and 50 in progress css
 	  last_mousey = parseInt(e.clientY-canvasy);
     mousedown = false;
 });
