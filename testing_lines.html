@@ -2,24 +2,17 @@
 <html>
   <head>
     <title>Testing</title>
-
   </head>
+
   <body>
 
-    <div class='parent'>
-
+    <div class='parent'> <!-- Outined box -->
 
     <div class="child">
       <div class="video-player">
         <video class="video">
-          <source
-            src="4.mp4"
-            type="video/mp4"
-          />
-          <source
-            src="4.mp4"
-            type="video/webm"
-          />
+          <source src="4.mp4" type="video/mp4"/>
+          <source src="4.mp4" type="video/webm"/>
           <p>Your browser doesn't support HTML5 video.</p>
         </video>
 
@@ -29,31 +22,28 @@
             <div class="progress__filled"></div>
           </div>
         </div>
+          <!-- <button class="controls__button" data-skip="-0.1">« .1s</button>
           <button class="controls__button toggleButton" title="Toggle Play">►</button>
+          <button class="controls__button" data-skip="0.1">.1s »</button> -->
         </div>
       </div>
+      <!-- <input type="button" value="Draw Time Column" > -->
+      <button type="button" data-skip="-0.1">« .1s</button>
+      <button type="button" class="toggleButton" title="Toggle Play" onclick="makeTimeColumn()">►</button>
+      <button type="button" data-skip="0.1">.1s »</button>
   </div>
-<input type="button" value="Draw Time Column" onclick="makeTimeColumn()">
+
      <div id="divTableDataHolder" class="child">
- <!-- <table border="1" id="lmatableHolder" class="display">
 
-      <tr>
-        <td>
-        <table border="1" id="lmatable" class="display">
-          <tr>
-        <td>Time (s)</td>
-      </tr>
-      </table>
-    </td>
-        <td> -->
-      <canvas id="canvas" width="800" height="600"></canvas>
-    <!-- </td>
-    </tr>
+                <div class="progress2">
+                  <div class="progress__filled2"></div>
+                </div>
 
-</table> -->
+      <canvas id="canvas" width="600" height="400"></canvas>
+      <!-- <canvas id="canvas2" width="600" height="400"></canvas> -->
+
 <br /><br />
-<!-- <input id="row" placeholder="Enter Video Time in Seconds" /><button id="irow">Enter</button><br /><br /> -->
-<!-- <input type="button" value="Draw Time Column" onclick="makeTimeColumn()"> -->
+
   <form name="form" id="form">
       <select name="optone" id="stateSel" size="1">
           <option value="" selected="selected">Select</option>
@@ -67,17 +57,13 @@
           <option value="" selected="selected">Select</option>
       </select>
   </form>
-  <!-- <button id="icol">Insert Column</button><br /><br /> -->
 <input type="button" value="Add LMA Column" onclick="addLMAColumn()">
   </div>
 
 
 
-
-
 </div>
 <input type="button" value="Clear All" onclick="clearAllButton()">
-<!-- (B) DOWNLOAD AS CSV -->
 <input type="button" value="Save to Excel" onclick="downloadCSV()">
 
 

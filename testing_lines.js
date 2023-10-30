@@ -87,8 +87,45 @@ var lmaObject = {
 		}
 }
 
+function makeTimeColumn(){
+	var num_rows=3;
+	var increment = 5;
+	var spacing = canvas.height/(increment*num_rows);
+	ctx.setLineDash([5, 10]);
+	for(let i = 0; i < increment*num_rows+1; i++){
+
+		ctx.beginPath();
+		ctx.strokeStyle = "#7a7a7a"; //Change Line Color
+		ctx.lineWidth = 2; //Change Line Width/Thickness
+		ctx.moveTo(0,i*spacing);
+		ctx.lineTo(width,i*spacing);
+		// ctx.endPath();
+		ctx.stroke();
+	}
+	ctx.setLineDash([0, 0])
+	ctx.beginPath();
+	ctx.strokeStyle = "#7a7a7a"; //Change Line Color
+	ctx.lineWidth = 2; //Change Line Width/Thickness
+	ctx.moveTo(30,0);
+	ctx.lineTo(30,height);
+	ctx.stroke();
+	addFixedLineToArray(30,0,height);
+	var j =0;
+	while(j< increment*num_rows+1){
+		// window.alert(j);
+		ctx.textAlign ="right";
+		ctx.font = "13px serif";
+		ctx.fillStyle = "black";
+		ctx.fillText((num_rows-(j/increment)).toFixed(1), 25, (j*spacing)+15,500);
+		j+=1;
+		// window.alert(j);
+	}
+
+}
+
 var lmaSel;
 window.onload = function () {
+	makeTimeColumn()
     var stateSel = document.getElementById("stateSel"),
         countySel = document.getElementById("countySel"),
         citySel = document.getElementById("citySel");
@@ -150,41 +187,7 @@ function addLMAColumn(){
 	// columnCount+=1;
 }
 
-function makeTimeColumn(){
-	var num_rows=3;
-	var increment = 5;
-	var spacing = canvas.height/(increment*num_rows);
-	ctx.setLineDash([5, 10]);
-	for(let i = 0; i < increment*num_rows+1; i++){
 
-		ctx.beginPath();
-		ctx.strokeStyle = "#7a7a7a"; //Change Line Color
-		ctx.lineWidth = 2; //Change Line Width/Thickness
-		ctx.moveTo(0,i*spacing);
-		ctx.lineTo(width,i*spacing);
-		// ctx.endPath();
-		ctx.stroke();
-	}
-	ctx.setLineDash([0, 0])
-	ctx.beginPath();
-	ctx.strokeStyle = "#7a7a7a"; //Change Line Color
-	ctx.lineWidth = 2; //Change Line Width/Thickness
-	ctx.moveTo(30,0);
-	ctx.lineTo(30,height);
-	ctx.stroke();
-	addFixedLineToArray(30,0,height);
-	var j =0;
-	while(j< increment*num_rows+1){
-		// window.alert(j);
-		ctx.textAlign ="right";
-		ctx.font = "13px serif";
-		ctx.fillStyle = "black";
-		ctx.fillText((num_rows-(j/increment)).toFixed(1), 25, (j*spacing)+15,500);
-		j+=1;
-		// window.alert(j);
-	}
-
-}
 
 
 
@@ -275,6 +278,8 @@ const video = document.querySelector(".video");
 const toggleButton = document.querySelector(".toggleButton");
 const progress = document.querySelector(".progress");
 const progressBar = document.querySelector(".progress__filled");
+const progress2 = document.querySelector(".progress2");
+const progressBar2 = document.querySelector(".progress__filled2");
 
 function togglePlay() {
   if (video.paused || video.ended) {
@@ -291,12 +296,13 @@ function updateToggleButton() {
 function handleProgress() {
   const progressPercentage = (video.currentTime / video.duration) * 100;
   progressBar.style.height = `${progressPercentage}%`;
+	progressBar2.style.height = `${progressPercentage}%`;
 }
 
-function scrub(e) {
-  const scrubTime = (e.offsetY / progress.offsetHeight) * video.duration;
-  video.currentTime = scrubTime;
-}
+// function scrub(e) {
+//   const scrubTime = (e.offsetY / progress.offsetHeight) * video.duration;
+//   video.currentTime = scrubTime;
+// }
 //
 toggleButton.addEventListener("click", togglePlay);
 video.addEventListener("click", togglePlay);
@@ -304,4 +310,18 @@ video.addEventListener("play", updateToggleButton);
 video.addEventListener("pause", updateToggleButton);
 
 video.addEventListener("timeupdate", handleProgress);
-progress.addEventListener("click", scrub);
+// progress.addEventListener("click", scrub);
+
+const skipBtns = document.querySelectorAll("[data-skip]");
+
+function handleSliderUpdate() {
+  video[this.name] = this.value;
+}
+
+function handleSkip() {
+  video.currentTime += +this.dataset.skip;
+}
+
+skipBtns.forEach((btn) => {
+  btn.addEventListener("click", handleSkip);
+});
