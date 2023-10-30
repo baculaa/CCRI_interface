@@ -2,6 +2,7 @@
 
 
 TODO:
+0. delete one line, right click to delete
 1. 3 line thicknesses, cycle thru when click on line
 2. Editable line endpoints
 3. Context option
