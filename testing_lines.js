@@ -20,41 +20,178 @@ let line_points = Array(height).fill().map(() => Array(width).fill(0));
 //     ctx.drawImage(background,0,0,width,height);
 // }
 
+
+
+
 //Mousedown
-$(canvas).on('mousedown', function(e) {
-    last_mousex = parseInt(e.clientX-canvasx-100);//offset from 50 in container css and 50 in progress css
-	  last_mousey = parseInt(e.clientY-canvasy);
-    mousedown = false;
-});
+// $(canvas).on('mousedown', function(e) {
+
+
+
+
+  //   //last_mousex = parseInt(e.clientX-canvasx);
+	//   //last_mousey = parseInt(e.clientY-canvasy);
+	// last_mousex = parseInt(e.clientX-canvasx-20); //offset from 10 in container css and 10 in progress css
+	// last_mousey = parseInt(e.clientY-canvasy);
+  //   mousedown = false;
+// });
 
 //Mouseup
-$(canvas).on('mouseup', function(e) {
-  mousex = parseInt(e.clientX-canvasx);
-	mousey = parseInt(e.clientY-canvasy);
-    mousedown = true;
+// $(canvas).on('mouseup', function(e) {
+// 	window.alert("MOUSEUP");
+//   	mousex = parseInt(e.clientX-canvasx);
+//   	mousey = parseInt(e.clientY-canvasy);
+//     mousedown = true;
+//
+//     ctx.beginPath();
+//  	ctx.strokeStyle = "#000"; //Change Line Color
+//   	ctx.lineWidth = 2; //Change Line Width/Thickness
+//   	ctx.moveTo(last_mousex,last_mousey);
+//   	ctx.lineTo(last_mousex,mousey);
+//   	ctx.stroke();
+//
+//   	var startY = mousey;
+//   	var endY = last_mousey;
+//
+//   	if (last_mousey < mousey)
+//   	{
+//   		startY = last_mousey;
+//   		endY = mousey;
+//   	}
+//
+//   	for(let i=startY; i < endY; i++)
+//   	{
+//   		line_points[i][last_mousex] = 1;
+// 	}
+// });
+
+
+
+// // Mousemove
+// $(canvas).on('mousemove', function(e) {
+//     /* mousex = parseInt(e.clientX-canvasx);
+//       mousey = parseInt(e.clientY-canvasy); */
+//     if(mousedown) {
+//         /* ctx.clearRect(0,0,canvas.width,canvas.height) */ //clear canvas
+//       ctx.beginPath();
+//  			 ctx.strokeStyle = "#000"; //Change Line Color
+//   		ctx.lineWidth = 2; //Change Line Width/Thickness
+//   		ctx.moveTo(last_mousex,last_mousey);
+//   		ctx.lineTo(last_mousex,mousey);
+//   		ctx.stroke();
+//   for(let i=mousey; i < last_mousey; i++){
+//   line_points[i][last_mousex] = 1;}
+//     }
+//     //Output
+//     /* $('#output').html('current: '+mousex+', '+mousey+'<br/>last: '+last_mousex+', '+last_mousey+'<br/>mousedown: '+mousedown); */
+// });
+
+var line, isDown,mode;
+
+var canvas2 = new fabric.Canvas('canvas2');
+     canvas2.perPixelTargetFind = true;
+     canvas2.targetFindTolerance = 4;
+
+$("#select").click(function(){
+    mode="select";
+    canvas2.selection=true;
+    canvas2.renderAll();
+});
+$("#draw").click(function(){
+
+
+    mode="draw";
+});
+$("#delete").click(function(){
+
+
+    deleteObjects();
+});
+
+// Adding objects to the canvas...
+var firstX = 0;
+var itemNumber = -1;
+var listOfXPos = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+canvas2.on('mouse:down', function(o){
+  isDown = true;
+	itemNumber +=1;
+  var pointer = canvas2.getPointer(o.e);
+  var points = [ pointer.x, pointer.y, pointer.x, pointer.y ];
+	firstX = pointer.x
+	listOfXPos[itemNumber] = firstX;
+  if(mode=="draw"){
+    line = new fabric.Line(points, {
+    strokeWidth: 15,
+    fill: 'red',
+    stroke: 'red',
+    originX: 'center',
+    originY: 'center',
+
+  });
+
+	// line = new fabric.Rect({
+	// 	left: pointer.x, top: pointer.y, fill: '#f0f', width: 20
+	// });
+  canvas2.add(line);}
+});
+
+canvas2.on('mouse:move', function(o){
+  if (!isDown) return;
+	canvas2.item(itemNumber).lockRotation = true;
+	canvas2.item(itemNumber).lockScalingX = true;
+  var pointer = canvas2.getPointer(o.e);
+  if(mode=="draw"){
+	  line.set({ x2: firstX, y2: pointer.y });
+	  canvas2.renderAll(); }
+
+
+
+
+
+
+	// window.alert(itemNumber);
+
+
+
+
+
+});
+
+canvas2.on('mouse:up', function(o){
+  isDown = false;
+	// for(i=0; i <=itemNumber; i++){
+	// 		window.alert(canvas2.item(i).height);
+	// }
+
+
+  line.setCoords();
+	// window.alert(m);
+	// window.alert(canvas.getActiveObject().getCoords());
+
 });
 
 
 
-//Mousemove
-$(canvas).on('mousemove', function(e) {
-    /* mousex = parseInt(e.clientX-canvasx);
-      mousey = parseInt(e.clientY-canvasy); */
-    if(mousedown) {
-        /* ctx.clearRect(0,0,canvas.width,canvas.height) */ //clear canvas
-      ctx.beginPath();
- 			 ctx.strokeStyle = "#000"; //Change Line Color
-  	ctx.lineWidth = 2; //Change Line Width/Thickness
-  ctx.moveTo(last_mousex,last_mousey);
-  ctx.lineTo(last_mousex,mousey);
-  ctx.stroke();
-  for(let i=mousey; i < last_mousey; i++){
-  line_points[i][last_mousex] = 1;}
+// select all objects
+function deleteObjects(){
+    var activeObject = canvas2.getActiveObject(),
+    activeGroup = canvas2.getActiveGroup();
+    if (activeObject) {
+        if (confirm('Are you sure?')) {
+            canvas2.remove(activeObject);
+        }
     }
-    //Output
-    /* $('#output').html('current: '+mousex+', '+mousey+'<br/>last: '+last_mousex+', '+last_mousey+'<br/>mousedown: '+mousedown); */
-});
-
+    else if (activeGroup) {
+        if (confirm('Are you sure?')) {
+            var objectsInGroup = activeGroup.getObjects();
+            canvas2.discardActiveGroup();
+            objectsInGroup.forEach(function(object) {
+            canvas2.remove(object);
+            });
+        }
+    }
+}
 
 
 var lmaObject = {
@@ -86,9 +223,8 @@ var lmaObject = {
 			  "Phrasing": ["Even","Impulsive","Impactive","Swing","Becoming","Diminishing","Vibratory"]
 		}
 }
-
 function makeTimeColumn(){
-	var num_rows=3;
+	var num_rows=video.duration;
 	var increment = 5;
 	var spacing = canvas.height/(increment*num_rows);
 	ctx.setLineDash([5, 10]);
@@ -106,10 +242,10 @@ function makeTimeColumn(){
 	ctx.beginPath();
 	ctx.strokeStyle = "#7a7a7a"; //Change Line Color
 	ctx.lineWidth = 2; //Change Line Width/Thickness
-	ctx.moveTo(30,0);
-	ctx.lineTo(30,height);
+	ctx.moveTo(40,0);
+	ctx.lineTo(40,height);
 	ctx.stroke();
-	addFixedLineToArray(30,0,height);
+	addFixedLineToArray(40,0,height);
 	var j =0;
 	while(j< increment*num_rows+1){
 		// window.alert(j);
@@ -122,6 +258,7 @@ function makeTimeColumn(){
 	}
 
 }
+
 
 var lmaSel;
 window.onload = function () {
@@ -203,7 +340,7 @@ function getRidBlankColumns(array_name){
 			numFilledCols += 1;
 			colsToSave.push(i)
       /* window.alert(i) */;
-      window.alert(colsToSave);
+      //window.alert(colsToSave);
 		}
 	}
 	let condensedArray = Array(height+1).fill().map(() => Array(numFilledCols).fill(0));
@@ -296,7 +433,7 @@ function updateToggleButton() {
 function handleProgress() {
   const progressPercentage = (video.currentTime / video.duration) * 100;
   progressBar.style.height = `${progressPercentage}%`;
-	progressBar2.style.height = `${progressPercentage}%`;
+  progressBar2.style.height = `${progressPercentage}%`;
 }
 
 // function scrub(e) {
@@ -310,7 +447,12 @@ video.addEventListener("play", updateToggleButton);
 video.addEventListener("pause", updateToggleButton);
 
 video.addEventListener("timeupdate", handleProgress);
-// progress.addEventListener("click", scrub);
+//progress.addEventListener("click", scrub);
+
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Space") togglePlay();
+});
+
 
 const skipBtns = document.querySelectorAll("[data-skip]");
 

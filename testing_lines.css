@@ -5,7 +5,7 @@ body {
 .parent {
   border: 1px solid black;
   margin: 1rem;
-  padding: 2rem 2rem;
+  padding: 1rem 1rem;
   text-align: left;
 }
 .child {
@@ -29,31 +29,23 @@ table{
     width:300px;
     height:200px;
 }
-#canvas, #canvasTemp,{
-
+#canvas, #canvasTemp, {
+    position:relative;
+    top:0px;
+    left:0px;
     border:1px solid blue;
     width:100%;
     height:100%;
 }
 #canvasTemp {
-  position:relative;
-  top:0px;
-  left:0px;
     border:1.5px solid green;
 }
 #canvas {
-  position:relative;
-  top:0px;
-  left:0px;
     border:0.5px solid blue;
-    z-index: 0;
 }
-/* #canvas2{
-  position:relative;
-  top:0px;
-  left:-605px;
-  z-index: 1;
-} */
+#canvas2 {
+    border:2px solid green;
+}
 
 
 /* Dropdown Button */
@@ -162,14 +154,14 @@ table{
     height: 100%;
     overflow: hidden;
     position: relative;
-    margin:50px auto;
+    margin:10px auto;
   }
   .progress {
     background-color: transparent;
     position: relative;
     top: 50%;
-    margin-left: 50px;
-    width: 50px;
+    margin-left: 0px;
+    width: 40px;
     height: 100px;
     float: right;
     transform-origin: bottom;
@@ -188,8 +180,8 @@ table{
     background-color: #D8D8D8;
     position: relative;
     top: 50%;
-    margin-left: 50px;
-    width: 50px;
+    margin-left: 0px;
+    width: 40px;
     height: 400px;
     float: left;
     transform-origin: bottom;

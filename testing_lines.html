@@ -2,6 +2,8 @@
 <html>
   <head>
     <title>Testing</title>
+    <script src="jquery.js"></script>
+    <script type ="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js"></script>
   </head>
 
   <body>
@@ -39,11 +41,19 @@
                   <div class="progress__filled2"></div>
                 </div>
 
-      <canvas id="canvas" width="600" height="400"></canvas>
-      <!-- <canvas id="canvas2" width="600" height="400"></canvas> -->
+          <div style="position: relative;">
+             <canvas id="canvas" width="600" height="400"
+               style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
+             <canvas id="canvas2" width="600" height="400"
+               style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+            </div>
 
-<br /><br />
 
+
+<button id="select">Selection mode</button>
+<button id="draw">Drawing mode</button>
+<button id="delete">Delete selected object(s)</button><br />
+<br/></br>
   <form name="form" id="form">
       <select name="optone" id="stateSel" size="1">
           <option value="" selected="selected">Select</option>
@@ -58,16 +68,19 @@
       </select>
   </form>
 <input type="button" value="Add LMA Column" onclick="addLMAColumn()">
+
   </div>
 
 
 
 </div>
+
 <input type="button" value="Clear All" onclick="clearAllButton()">
 <input type="button" value="Save to Excel" onclick="downloadCSV()">
 
 
-<script src="jquery.js"></script>
+
+
 <link rel="stylesheet" type="text/css" href="./testing_lines.css">
 <script src="testing_lines.js"></script>
 
