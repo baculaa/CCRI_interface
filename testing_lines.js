@@ -98,12 +98,10 @@ $("#select").click(function(){
     canvas2.renderAll();
 });
 $("#draw").click(function(){
-
-
     mode="draw";
 });
 $("#delete").click(function(){
-
+    mode="delete";
 
     deleteObjects();
 });
@@ -118,8 +116,9 @@ canvas2.on('mouse:down', function(o){
 	itemNumber +=1;
   var pointer = canvas2.getPointer(o.e);
   var points = [ pointer.x, pointer.y, pointer.x, pointer.y ];
-	firstX = pointer.x
-	listOfXPos[itemNumber] = firstX;
+  firstX = pointer.x;
+  // window.alert(firstX);
+  listOfXPos[itemNumber] = firstX;
   if(mode=="draw"){
     line = new fabric.Line(points, {
     strokeWidth: 15,
@@ -138,39 +137,31 @@ canvas2.on('mouse:down', function(o){
 
 canvas2.on('mouse:move', function(o){
   if (!isDown) return;
-	canvas2.item(itemNumber).lockRotation = true;
-	canvas2.item(itemNumber).lockScalingX = true;
+  if(mode=="select"){
+  	canvas2.item(itemNumber).lockRotation = true;
+  	canvas2.item(itemNumber).lockScalingX = true;
+  }
   var pointer = canvas2.getPointer(o.e);
   if(mode=="draw"){
 	  line.set({ x2: firstX, y2: pointer.y });
 	  canvas2.renderAll(); }
-
-
-
-
-
-
 	// window.alert(itemNumber);
-
-
-
-
 
 });
 
 canvas2.on('mouse:up', function(o){
   isDown = false;
+  line.setCoords();
 	// for(i=0; i <=itemNumber; i++){
 	// 		window.alert(canvas2.item(i).height);
 	// }
 
-
-  line.setCoords();
-	// window.alert(m);
+  //
+  // window.alert(firstY);
+  // window.alert(pointer.y);
+	// window.alert(mode);
 	// window.alert(canvas.getActiveObject().getCoords());
-
 });
-
 
 
 // select all objects
