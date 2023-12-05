@@ -93,39 +93,42 @@ var canvas2 = new fabric.Canvas('canvas2');
      canvas2.targetFindTolerance = 4;
 
 $("#select").click(function(){
-    mode="select";
+    mode="select_mode";
     canvas2.selection=true;
     canvas2.renderAll();
 });
 $("#draw").click(function(){
+    mode="draw_mode";
+    canvas2.selection=false;
+    // canvas2.renderAll();
 
-
-    mode="draw";
 });
 $("#delete").click(function(){
 
-
+    mode="delete_mode";
+    canvas2.selection=true;
     deleteObjects();
 });
-$("#getinfo").click(function(){
-
-
-    getCoordsFromLine();
-});
+// $("#getinfo").click(function(){
+//
+//
+//     getCoordsFromLine();
+// });
 
 // Adding objects to the canvas...
 var firstX = 0;
 var itemNumber = -1;
-var listOfXPos = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+
+/// BUG: IF YOU USE SELCTION MODE IT WONT DOWNLOAD THE EXCEL SHEET
 
 canvas2.on('mouse:down', function(o){
   isDown = true;
-	itemNumber +=1;
   var pointer = canvas2.getPointer(o.e);
   var points = [ pointer.x, pointer.y, pointer.x, pointer.y ];
 	firstX = pointer.x
-	listOfXPos[itemNumber] = firstX;
-  if(mode=="draw"){
+  if(mode=="draw_mode"){
+    itemNumber +=1;
     line = new fabric.Line(points, {
     strokeWidth: 15,
     fill: 'black',
@@ -134,47 +137,28 @@ canvas2.on('mouse:down', function(o){
     originY: 'center',
 
   });
-
-	// line = new fabric.Rect({
-	// 	left: pointer.x, top: pointer.y, fill: '#f0f', width: 20
-	// });
   canvas2.add(line);}
 });
 
 canvas2.on('mouse:move', function(o){
   if (!isDown) return;
-	canvas2.item(itemNumber).lockRotation = true;
-	canvas2.item(itemNumber).lockScalingX = true;
+  if(mode=="select_mode"){
+   canvas2.item(itemNumber).lockRotation = true;
+   // canvas2.item(itemNumber).lockScalingX = true;
+ }
+
   var pointer = canvas2.getPointer(o.e);
-  if(mode=="draw"){
+  if(mode=="draw_mode"){
 	  line.set({ x2: firstX, y2: pointer.y });
 	  canvas2.renderAll(); }
-
-
-
-
-
-
-	// window.alert(itemNumber);
-
-
-
-
-
 });
 
 canvas2.on('mouse:up', function(o){
   isDown = false;
-	// for(i=0; i <=itemNumber; i++){
-	// 		window.alert(canvas2.item(i).height);
-	// }
-
-
   line.setCoords();
-	// window.alert(m);
-	// window.alert(canvas.getActiveObject().getCoords());
-
 });
+
+
 function getCoordsFromLine(){
   var lma_col_cnt = 0;
   var lma_col_max = lmaSelectedCols.length;
@@ -185,32 +169,26 @@ function getCoordsFromLine(){
   for(j=0; j <lma_col_max; j++){
     condensedArray[0][j] = lmaSelectedCols[j];
   // for each item, check which column it is in and add to array
+    window.alert(itemNumber);
     for(i=0; i <=itemNumber; i++){
       // oCoords.tl.x, oCoords.tl.y // top left corner
       // oCoords.tr.x, oCoords.tr.y // top right corner
       // oCoords.bl.x, oCoords.bl.y // bottom left corner
       // oCoords.br.x, oCoords.br.y // bottom right corner
-      // window.alert(columnBoundaries[j+1]);
-      // window.alert(columnBoundaries[j]);
-      // window.alert(parseInt(canvas2.item(i).oCoords.tr.x));
-
       if (parseInt(canvas2.item(i).oCoords.tr.x) <= parseInt(columnBoundaries[j+1]) && parseInt(canvas2.item(i).oCoords.tr.x) > parseInt  (columnBoundaries[j])){
-        // window.alert("HERE");
         // if the top right corner is within the bound of the lma column
-        // window.alert(canvas2.item(i).oCoords.tr.x);
         top_y_coord = canvas2.item(i).oCoords.tr.y;
         if (top_y_coord<1){
-          window.alert(top_y_coord);
+          // window.alert(top_y_coord);
           top_y_coord=1;
         }
         bottom_y_coord = canvas2.item(i).oCoords.br.y;
+        thickness = parseInt(canvas2.item(i).oCoords.tr.x) - parseInt(canvas2.item(i).oCoords.tl.x);
         // window.alert(top_y_coord);
         // window.alert(bottom_y_coord);
-        thickness = parseInt(canvas2.item(i).oCoords.tr.x) - parseInt(canvas2.item(i).oCoords.tl.x);
-        // window.alert(thickness);
         for(n=parseInt(top_y_coord); n<=parseInt(bottom_y_coord);n++){
-          // window.alert(n);
-          if (thickness <= 5){
+          if (thickness <= 10){
+            // window.alert("HERE1");
             condensedArray[n][j] = 1;
 
           }
@@ -218,13 +196,14 @@ function getCoordsFromLine(){
             condensedArray[n][j] = 2;
           }
           else{
+            // window.alert("HERE3");
             condensedArray[n][j] = 3;
           }
         }
       }
     }
   }
-    // window.alert(condensedArray);
+    window.alert(condensedArray);
     return condensedArray;
 }
 
@@ -386,32 +365,32 @@ function addLMAColumn(){
 
 
 
-
-function getRidBlankColumns(array_name){
-	var numFilledCols = 0;
-	var colsToSave = [];
-	for (var i=0; i<array_name[0].length; i++){
-		columnCheck=0;
-		for (var j=0; j<array_name.length; j++){
-			columnCheck += array_name[j][i];
-		}
-		if (columnCheck > 0 && columnCheck < height+2){
-			numFilledCols += 1;
-			colsToSave.push(i)
-      /* window.alert(i) */;
-      //window.alert(colsToSave);
-		}
-	}
-	let condensedArray = Array(height+1).fill().map(() => Array(numFilledCols).fill(0));
-  for (var k=0; k<numFilledCols; k++){
-  columnNumber = colsToSave[k];
-  for (var i=0; i<height; i++){
-  condensedArray[i][k] = array_name[i][columnNumber];
-	condensedArray[0][k] = lmaSelectedCols[k];
-  }
-  }
-  return condensedArray;
-}
+// FOR OLD VERSION OF LINES
+// function getRidBlankColumns(array_name){
+// 	var numFilledCols = 0;
+// 	var colsToSave = [];
+// 	for (var i=0; i<array_name[0].length; i++){
+// 		columnCheck=0;
+// 		for (var j=0; j<array_name.length; j++){
+// 			columnCheck += array_name[j][i];
+// 		}
+// 		if (columnCheck > 0 && columnCheck < height+2){
+// 			numFilledCols += 1;
+// 			colsToSave.push(i)
+//       /* window.alert(i) */;
+//       //window.alert(colsToSave);
+// 		}
+// 	}
+// 	let condensedArray = Array(height+1).fill().map(() => Array(numFilledCols).fill(0));
+//   for (var k=0; k<numFilledCols; k++){
+//   columnNumber = colsToSave[k];
+//   for (var i=0; i<height; i++){
+//   condensedArray[i][k] = array_name[i][columnNumber];
+// 	condensedArray[0][k] = lmaSelectedCols[k];
+//   }
+//   }
+//   return condensedArray;
+// }
 
 
 
@@ -435,11 +414,9 @@ function exportToCsv(filename, rows) {
             }
             return finalVal + '\n';
         };
-        // window.alert(rows.length);
+        window.alert(rows.length);
         var csvFile = '';
         for (var i = 0; i < rows.length; i++) {
-            // if(rows[i]){
-            // window.alert(rows[i]);
             csvFile += processRow(rows[i]);
         }
 
@@ -469,7 +446,7 @@ function clearAllButton(){
 
 function downloadCSV(){
   // exportToCsv('export.csv',condensedArray)}
-  exportToCsv('export.csv',getCoordsFromLine())}
+  exportToCsv('export.csv',getCoordsFromLine());}
 // exportToCsv('export.csv', getRidBlankColumns(line_points))}
 
 
