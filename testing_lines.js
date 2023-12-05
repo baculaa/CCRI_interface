@@ -440,6 +440,8 @@ function exportToCsv(filename, rows) {
 
 function clearAllButton(){
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+  canvas2.clear();
+  // canvas2.clearRect(0, 0, canvas.width, canvas.height);
 	makeTimeColumn();
 }
 
