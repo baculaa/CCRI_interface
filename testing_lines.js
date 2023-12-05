@@ -169,7 +169,7 @@ function getCoordsFromLine(){
   for(j=0; j <lma_col_max; j++){
     condensedArray[0][j] = lmaSelectedCols[j];
   // for each item, check which column it is in and add to array
-    window.alert(itemNumber);
+    // window.alert(itemNumber);
     for(i=0; i <=itemNumber; i++){
       // oCoords.tl.x, oCoords.tl.y // top left corner
       // oCoords.tr.x, oCoords.tr.y // top right corner
@@ -203,7 +203,7 @@ function getCoordsFromLine(){
       }
     }
   }
-    window.alert(condensedArray);
+    // window.alert(condensedArray);
     return condensedArray;
 }
 
@@ -414,7 +414,7 @@ function exportToCsv(filename, rows) {
             }
             return finalVal + '\n';
         };
-        window.alert(rows.length);
+        // window.alert(rows.length);
         var csvFile = '';
         for (var i = 0; i < rows.length; i++) {
             csvFile += processRow(rows[i]);
