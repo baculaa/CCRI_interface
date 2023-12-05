@@ -98,12 +98,19 @@ $("#select").click(function(){
     canvas2.renderAll();
 });
 $("#draw").click(function(){
+
+
     mode="draw";
 });
 $("#delete").click(function(){
-    mode="delete";
+
 
     deleteObjects();
+});
+$("#getinfo").click(function(){
+
+
+    getCoordsFromLine();
 });
 
 // Adding objects to the canvas...
@@ -116,14 +123,13 @@ canvas2.on('mouse:down', function(o){
 	itemNumber +=1;
   var pointer = canvas2.getPointer(o.e);
   var points = [ pointer.x, pointer.y, pointer.x, pointer.y ];
-  firstX = pointer.x;
-  // window.alert(firstX);
-  listOfXPos[itemNumber] = firstX;
+	firstX = pointer.x
+	listOfXPos[itemNumber] = firstX;
   if(mode=="draw"){
     line = new fabric.Line(points, {
     strokeWidth: 15,
-    fill: 'red',
-    stroke: 'red',
+    fill: 'black',
+    stroke: 'black',
     originX: 'center',
     originY: 'center',
 
@@ -137,31 +143,90 @@ canvas2.on('mouse:down', function(o){
 
 canvas2.on('mouse:move', function(o){
   if (!isDown) return;
-  if(mode=="select"){
-  	canvas2.item(itemNumber).lockRotation = true;
-  	canvas2.item(itemNumber).lockScalingX = true;
-  }
+	canvas2.item(itemNumber).lockRotation = true;
+	canvas2.item(itemNumber).lockScalingX = true;
   var pointer = canvas2.getPointer(o.e);
   if(mode=="draw"){
 	  line.set({ x2: firstX, y2: pointer.y });
 	  canvas2.renderAll(); }
+
+
+
+
+
+
 	// window.alert(itemNumber);
+
+
+
+
 
 });
 
 canvas2.on('mouse:up', function(o){
   isDown = false;
-  line.setCoords();
 	// for(i=0; i <=itemNumber; i++){
 	// 		window.alert(canvas2.item(i).height);
 	// }
 
-  //
-  // window.alert(firstY);
-  // window.alert(pointer.y);
-	// window.alert(mode);
+
+  line.setCoords();
+	// window.alert(m);
 	// window.alert(canvas.getActiveObject().getCoords());
+
 });
+function getCoordsFromLine(){
+  var lma_col_cnt = 0;
+  var lma_col_max = lmaSelectedCols.length;
+  // blank array with size canvas height x number of lma columns
+  let condensedArray = Array(height+1).fill().map(() => Array(lma_col_max).fill(0));
+  // window.alert(lmaSelectedCols);
+  // window.alert(lma_col_max);
+  for(j=0; j <lma_col_max; j++){
+    condensedArray[0][j] = lmaSelectedCols[j];
+  // for each item, check which column it is in and add to array
+    for(i=0; i <=itemNumber; i++){
+      // oCoords.tl.x, oCoords.tl.y // top left corner
+      // oCoords.tr.x, oCoords.tr.y // top right corner
+      // oCoords.bl.x, oCoords.bl.y // bottom left corner
+      // oCoords.br.x, oCoords.br.y // bottom right corner
+      // window.alert(columnBoundaries[j+1]);
+      // window.alert(columnBoundaries[j]);
+      // window.alert(parseInt(canvas2.item(i).oCoords.tr.x));
+
+      if (parseInt(canvas2.item(i).oCoords.tr.x) <= parseInt(columnBoundaries[j+1]) && parseInt(canvas2.item(i).oCoords.tr.x) > parseInt  (columnBoundaries[j])){
+        // window.alert("HERE");
+        // if the top right corner is within the bound of the lma column
+        // window.alert(canvas2.item(i).oCoords.tr.x);
+        top_y_coord = canvas2.item(i).oCoords.tr.y;
+        if (top_y_coord<1){
+          window.alert(top_y_coord);
+          top_y_coord=1;
+        }
+        bottom_y_coord = canvas2.item(i).oCoords.br.y;
+        // window.alert(top_y_coord);
+        // window.alert(bottom_y_coord);
+        thickness = parseInt(canvas2.item(i).oCoords.tr.x) - parseInt(canvas2.item(i).oCoords.tl.x);
+        // window.alert(thickness);
+        for(n=parseInt(top_y_coord); n<=parseInt(bottom_y_coord);n++){
+          // window.alert(n);
+          if (thickness <= 5){
+            condensedArray[n][j] = 1;
+
+          }
+          else if (thickness <= 20) {
+            condensedArray[n][j] = 2;
+          }
+          else{
+            condensedArray[n][j] = 3;
+          }
+        }
+      }
+    }
+  }
+    // window.alert(condensedArray);
+    return condensedArray;
+}
 
 
 // select all objects
@@ -295,6 +360,8 @@ function addFixedLineToArray(x,starty,endy){
 var columnCount = 1;
 var hLinePlace = 30;
 var lmaSelectedCols = [];
+var columnBoundaries = [30];
+
 function addLMAColumn(){
 	ctx.setLineDash([0, 0])
 	ctx.beginPath();
@@ -304,12 +371,13 @@ function addLMAColumn(){
 	ctx.textAlign ="middle";
 	ctx.font = "13px serif";
 	ctx.fillStyle = "black";
-	hLinePlace += (lmaSel.toString().length*10);
+	hLinePlace += 70;//(lmaSel.toString().length*10);
 	ctx.fillText(lmaSel.toString(), hLinePlace-5, 10,500);
 	ctx.moveTo(hLinePlace,0);
 	ctx.lineTo(hLinePlace,height);
 	ctx.stroke();
 	addFixedLineToArray(hLinePlace,0,height);
+  columnBoundaries.push(hLinePlace);
 	line_points[0][hLinePlace] = lmaSel;
 	lmaSelectedCols.push(lmaSel);
 	// columnCount+=1;
@@ -351,6 +419,7 @@ function getRidBlankColumns(array_name){
 // To CSV
 function exportToCsv(filename, rows) {
         var processRow = function (row) {
+
             var finalVal = '';
             for (var j = 0; j < row.length; j++) {
                 var innerValue = row[j] === null ? '' : row[j].toString();
@@ -366,9 +435,11 @@ function exportToCsv(filename, rows) {
             }
             return finalVal + '\n';
         };
-
+        // window.alert(rows.length);
         var csvFile = '';
         for (var i = 0; i < rows.length; i++) {
+            // if(rows[i]){
+            // window.alert(rows[i]);
             csvFile += processRow(rows[i]);
         }
 
@@ -397,7 +468,9 @@ function clearAllButton(){
 
 
 function downloadCSV(){
-exportToCsv('export.csv', getRidBlankColumns(line_points))}
+  // exportToCsv('export.csv',condensedArray)}
+  exportToCsv('export.csv',getCoordsFromLine())}
+// exportToCsv('export.csv', getRidBlankColumns(line_points))}
 
 
 // /* VIDEO CONTROLS */
