@@ -1,0 +1,53 @@
+TO DO
+
+make name and date entry field? (or add date/time to fancy filename)
+Screenshot feature
+Video controls: better styling + loop, mute, ff, and rw buttons
+    SVGs for play/pause
+SVGs are blurry (currently drawn as images), need better rendering/handling
+    fabric.loadSVGFromURL(
+    or just make text (copy from file)
+Make horizontal scroll (for more than 8 elements), pinning canvas 2 and 3 together
+    https://stackoverflow.com/questions/15461811/html-canvas-with-scrollbar
+    <div style="max-height: 400px; max-width: 600px; overflow: scroll;">
+        <canvas id="canvas2" width="1200" height="400" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+    </div>
+Finish relationship category and create symbols
+Flexible entry and search
+Alphabetize element lists
+
+cleanup/refactoring:
+
+when adding an emotion button -- need to streamline, everything is hardcoded [like, an array with sadness, elements, number etc]
+when adding videos -- need to streamline, everything is hardcoded [like an array for subjects vs videos vs labels]
+
+
+polishing:
+
+https://materializecss.com/select.html
+
+
+backburner/links:
+
+search: "https://www.google.com/search?client=safari&rls=en&q=fabric+js+limit+resize+of+object+to+one+dimesnions&ie=UTF-8&oe=UTF-8"
+https://stackoverflow.com/questions/4909167/how-to-add-a-custom-right-click-menu-to-a-webpage
+
+
+********Instructions, workshopping:
+
+make sure you have all the columns of elements that you want to notate before you enter drawing mode?
+
+Watch the video using the provided label.
+Establish annotation staff OR Create pallete: Add the elements you want to annotate using the buttons below.
+Annotate: Draw action strokes to annotate each element.
+Refine: Vertical extent indicates temporal duration, and horizontal extent indicates intensity.
+Edit: Delete selected object.
+Switch between draw, edit, delete, and export modes. 
+
+Reload to reset.
+
+This is not meant to be used on a phone, nor prepared for window resizes. Use chrome.
+
+
+*********SVGs, making
+https://www.figma.com/file/BW1ypdW2lwVxGrQFYfFcxb/MMWM---Symbols-%26-Figures---Main?type=design&node-id=1863-18276&mode=design&t=oNqUAYk4NeAK6oZd-0

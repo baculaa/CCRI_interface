@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Annotation DEMO</title>
+    <script src="script/jquery.js"></script>
+    <script type ="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js"></script>
+  </head>
+
+  <body>
+
+    <div class='parent'> <!-- blue box -->
+
+
+      <div class="child"> <!-- video and controls -->
+        <div class="video-player">
+          <video class="video" height="600" loop> 
+            <source src="assets/videos/videoholder.mp4" type="video/mp4"/>
+            <source src="assets/videos/videoholder.mp4" type="video/webm"/>
+            <p>Your browser doesn't support HTML5 video.</p>
+          </video>
+
+          <div class="controls">
+            <div class="container">
+            <div class="progress">
+              <div class="progress__filled"></div> <!-- this is invisible -->
+            </div>
+          </div>
+          </div>
+        </div>
+        <br>
+        <!-- <button type="button" data-skip="-0.1">⏪</button>
+        <button type="button" class="toggleButton" title="Toggle Play">▶️</button>
+        <button type="button" data-skip="0.1">⏩</button> -->
+        <button type="button" data-skip="-0.1">- 0.1s</button>
+        <button type="button" class="toggleButton" title="Toggle Play">Play</button>
+        <button type="button" data-skip="0.1">+ 0.1s</button>
+        <button type="button" class="muteButton">Mute</button>
+        <br><br>
+
+
+      <div id="videoInfoArea">
+      <form name="form" id="form2">
+        <select name="optvid" id="videoSel1" size="1">
+            <option value="" selected="selected">Select Video</option>
+        </select>
+
+        <input type="button" value="Load Video" onclick="pickVideo()">
+
+      </form>
+     </div>
+
+        <!-- <i style="font-family:Arial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Video label:</i> <b style="font-family:Arial;">angry</b>
+        <i style="font-family:Arial;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subject: Box <b>0</b></i> -->
+
+        <br>
+        <p style="font-family:Arial;">Watch the selected video using its provided label.</p> 
+        <p style="font-family:Arial;">Focus the annotation on the indicated subject.</p>
+<p style="font-family:Arial;">Rewatch and skip forward/backward as needed.</p>
+
+<!--         <br><br><br><br>
+        <br><br> -->
+
+      </div>
+
+      <div id="divTableDataHolder" class="child"> <!-- annotation and controls -->
+<p style="font-family:Arial;">SETUP MODE: Select (up to 8) elements to annotate using the buttons below the canvas.</p>
+<p style="font-family:Arial;"><i>Note: Editing these is not currently supported. Reload the page to reset the palette.</i></p> 
+<p style="font-family:Arial;">DRAWING MODE: Add boxes to indicate action strokes.</p>
+<p style="font-family:Arial;">EDITING MODE: Refine, reposition, and delete.</p>
+  <p style="font-family:Arial;"><i>Note: Vertical extent indicates temporal duration, and horizontal extent indicates intensity.</i></p> 
+  <!-- <p style="font-family:Arial;">Export: Download spreadsheet of annotation using the button below the canvas.</p> -->
+  <br>
+        <div class="buttons">
+         <button id="columns">&nbsp;Setup Mode&nbsp;</button>
+         <button id="draw">&nbsp;Drawing Mode&nbsp;</button>
+         <button id="select">&nbsp;Editing Mode&nbsp;</button>
+         <button id="delete">&nbsp;Delete selected object(s)&nbsp;</button>
+         <!-- <input type="button" value="Clear All" onclick="clearAllButton()"><br /> -->
+          <!-- <button id="getinfo">Get Line Info</button><br /> -->
+        </div>
+
+        <div class="progress2">
+          <div><img id="timerange" src="assets/videos/videoholder.png" alt="Range where label is indicated" width="40px"></div> <!-- time range info image -->
+          <div class="progress__filled2"></div> <!-- progress bar (clone) -->
+        </div>
+
+        <div style="position: relative;">
+          <canvas id="canvas" width="600" height="400"
+             style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
+          <canvas id="canvas2" width="600" height="400"
+             style="position: absolute; left: 0; top: 0; z-index: 3;"></canvas>
+          <canvas id="canvas3" width="600" height="40"
+             style="position: absolute; left: 0; top: 600; z-index: 1;"></canvas> 
+          <canvas id="canvas4" width="600" height="400"
+              style="position: absolute; left: 0; top: 0; z-index: 2;"></canvas>
+        </div>
+
+      <br>
+      <input type="button" id="excel" value="Save to Excel" onclick="downloadCSV()">
+      <!-- <input type="button" id="excel" value="Screenshot" onclick="generate()"> -->
+      <!-- <p style="font-family:Arial;"><i>Bug: This function may break after long editing sessions. It is best to draw annotation on paper and transfer.</i></p>  -->
+
+      <div id="miniAddColumsArea">
+      <input type="button" value="Populate ''Happy'' Elements" onclick="addHappyColumns()">
+      <input type="button" value="Populate ''Angry'' Elements" onclick="addAngryColumns()">
+      <br>
+      <input type="button" value="Populate ''Sadness'' Elements" onclick="addSadnessColumns()">
+      <input type="button" value="Populate ''Fear'' Elements" onclick="addFearColumns()">
+      <p style="font-family:Arial;"> OR </p>
+      <input type="button" value="Add Custom Elements" onclick="showCustomCols()">
+      </div>
+
+      <div id="addColumsArea">
+      <form name="form" id="form">
+        <select name="optone" id="componentSel" size="1">
+            <option value="" selected="selected">Select Component</option>
+        </select>
+
+        <select name="opttwo" id="categorySel" size="1">
+            <option value="" selected="selected">Select Category</option>
+        </select>
+
+        <select name="optthree" id="elementSel" size="1">
+            <option value="" selected="selected">Select Element</option>
+        </select>
+      </form>
+
+      <input type="button" value="Add LMA Column" onclick="addLMAColumn2()">
+      <input type="button" value="Done" onclick="setDrawMode()">
+     </div>
+
+     </div>
+
+
+    </div> <!-- blue box -->
+
+
+  <link rel="stylesheet" type="text/css" href="./interface.css">
+  <script src="interface.js"></script>
+
+
+  </body>
+</html>
